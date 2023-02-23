@@ -1,6 +1,35 @@
 <?php
-// !!! TODO 1: ваш код обробки GET запиту; виконання запиту через cURL у
-// пошукову систему; підготовка даних для малювання
+
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
+
+
+    $apiKey = 'AIzaSyDp8KYawOhF7cWSneuGNLTnO2D9mXCn2tY';
+    $cx = '56a9d004278b942fa';
+
+    $url = "https://www.googleapis.com/customsearch/v1?key={$apiKey}&cx={$cx}&q={$search}";
+
+
+    $curl = curl_init();
+
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+    $response = curl_exec($curl);
+
+
+    curl_close($curl);
+
+
+    $data = json_decode($response, true);
+
+    if (array_key_exists('items', $data)) {
+        $items = $data['items'];
+    }
+
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +47,16 @@
 </form>
 
 <?php
-// !!! TODO 2: код відображення відповіді
+
+
+if (isset($items)) {
+    foreach ($items as $item) {
+        echo '<h3>' . $item['title'] . '</h3>';
+        echo '<p>' . $item['snippet'] . '</p>';
+        echo '<a href="' . $item['link'] . '">Read more</a><br><br>';
+    }
+}
 ?>
+
 </body>
 </html>
